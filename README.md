@@ -2,7 +2,7 @@
 
 **Efficient learning from disjunction agreement pairs — an algorithm and proof for the formulation in Blum–Balcan (2007)**
 
-Grisha Pochuev · <n_854@mail.ru> · research note dated 20 October 2026
+Grisha Pochuev · ORCID [0009-0005-0078-0857](https://orcid.org/0009-0005-0078-0857) · <n_854@mail.ru> · research note dated 20 October 2026
 
 📄 **Paper:** [`paper/disjunction_agreement_note.pdf`](paper/disjunction_agreement_note.pdf) (8 pages, LaTeX source alongside)
 

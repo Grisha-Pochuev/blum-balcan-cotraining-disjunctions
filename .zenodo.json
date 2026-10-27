@@ -3,13 +3,28 @@
   "upload_type": "publication",
   "publication_type": "preprint",
   "creators": [
-    {"name": "Pochuev, Grisha"}
+    {
+      "name": "Pochuev, Grisha",
+      "orcid": "0009-0005-0078-0857"
+    }
   ],
   "description": "<p>An elementary exclusion-closure algorithm computes the greatest disjunction consistent with labelled examples and exact agreement on unlabelled pairs. Combining this solver with two finite-class bounds gives a polynomial-time learner using O((ln |C<sub>D,χ</sub>(τ)| + ln(1/δ))/ε) labelled pairs and O((n + ln(1/δ))/τ) unlabelled pairs, for arbitrary joint distributions satisfying the realizable agreement promise. Taking τ = ε gives the labelled-sample benchmark in the 'Co-training with disjunctions' question of Blum and Balcan (COLT 2007). A fully specified stopping rule removes the need to know or count the compatible class, with the same order of labels in expectation and with high probability.</p><p>The record contains the research note (PDF and LaTeX source), a standard-library Python implementation, and finite verification scripts with their exact results.</p><p>Contact: n_854@mail.ru</p>",
   "license": "cc-by-4.0",
   "language": "eng",
-  "keywords": ["semi-supervised learning", "co-training", "disjunctions", "PAC learning", "Horn satisfiability", "open problem", "COLT 2007"],
+  "keywords": [
+    "semi-supervised learning",
+    "co-training",
+    "disjunctions",
+    "PAC learning",
+    "Horn satisfiability",
+    "open problem",
+    "COLT 2007"
+  ],
   "related_identifiers": [
-    {"identifier": "10.1007/978-3-540-72927-3_45", "relation": "cites", "resource_type": "publication-conferencepaper"}
+    {
+      "identifier": "10.1007/978-3-540-72927-3_45",
+      "relation": "cites",
+      "resource_type": "publication-conferencepaper"
+    }
   ]
 }
