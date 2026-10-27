@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "dimension": 4,
+      "epsilon": 0.2,
+      "delta": 0.1,
+      "seed": 318,
+      "true_error": 0.0,
+      "unlabelled_pairs": 33,
+      "labelled_pairs": 1625,
+      "phases": 1,
+      "stopped_by": "deterministic cap",
+      "history": [
+        [
+          0,
+          1625,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "dimension": 4096,
+      "epsilon": 0.49,
+      "delta": 0.5,
+      "seed": 20261020,
+      "true_error": 0.168212890625,
+      "unlabelled_pairs": 5799,
+      "labelled_pairs": 28070,
+      "phases": 5,
+      "stopped_by": "independent validation",
+      "history": [
+        [
+          0,
+          453,
+          453,
+          405
+        ],
+        [
+          1,
+          906,
+          906,
+          731
+        ],
+        [
+          2,
+          1811,
+          1811,
+          1149
+        ],
+        [
+          3,
+          3622,
+          3622,
+          1512
+        ],
+        [
+          4,
+          7243,
+          7243,
+          1179
+        ]
+      ]
+    }
+  ],
+  "scope": [
+    "cap",
+    "rejection and continuation",
+    "validation acceptance",
+    "sample accounting",
+    "one-shot unlabelled supports"
+  ],
+  "limitation": "Seeded execution checks do not establish a distribution-free theorem."
+}

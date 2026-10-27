@@ -1,0 +1,595 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,microtype,enumitem,xcolor,fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\definecolor{ink}{HTML}{183449}
+\definecolor{muted}{HTML}{536477}
+\hypersetup{pdftitle={Efficient learning from disjunction agreement pairs},
+ pdfauthor={Research note prepared for Grisha Pochuev}}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+\setlist{itemsep=2pt,topsep=4pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{muted}Disjunction agreement pairs}
+\fancyhead[R]{\small\color{muted}20 October 2026}
+\fancyfoot[C]{\small\thepage}
+\setlength{\headheight}{14pt}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\C}{\mathcal C}
+\newcommand{\HU}{\mathcal H_U}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prb}{\mathbb P}
+\newcommand{\CONS}{\operatorname{CONS}}
+
+\begin{document}
+\begin{center}
+{\LARGE\bfseries\color{ink}Efficient learning from\\[3pt]
+disjunction agreement pairs}\\[9pt]
+{\large An algorithm and proof for the formulation in Blum--Balcan (2007)}\\[10pt]
+Research note prepared for Grisha Pochuev\\
+\href{mailto:n_854@mail.ru}{\texttt{n\_854@mail.ru}}\\
+20 October 2026
+\end{center}
+
+\begin{abstract}
+An elementary exclusion-closure algorithm computes the greatest disjunction
+consistent with labelled examples and exact agreement on unlabelled pairs.
+Combining this solver with two finite-class bounds gives a polynomial-time
+learner using
+\(O((\ln|\C_{D,\chi}(\tau)|+\ln(1/\delta))/\varepsilon)\)
+labelled pairs and
+\(O((n+\ln(1/\delta))/\tau)\) unlabelled pairs, for arbitrary joint
+distributions satisfying the realizable agreement promise. Taking
+\(\tau=\varepsilon\) gives the labelled-sample benchmark in the stated
+2007 question. A fully specified stopping rule removes the need to know
+or count the compatible class, with the same order of labels in expectation
+and with high probability.
+\end{abstract}
+
+\begin{quote}
+\small\textbf{Status.} This note supplies a self-contained mathematical argument
+for the stated learning guarantee. It does not establish that the argument is
+new, that the problem remained open until this date, or that the historical
+reward is currently payable. Those are separate bibliographic and author-review
+questions. No external acceptance is claimed.
+\end{quote}
+
+\section{Setting and precise guarantee}
+
+Blum and Balcan's 2007 note \cite{bb07}, Section 3, asks for efficient
+learning with a number of labelled examples controlled by the logarithm
+of the nearly compatible class. The relevant item in Section 3.2 is
+\emph{Co-training with disjunctions}. The reward statement in that note
+offers \$300 for a positive solution to an item in the list.
+
+We state the result using \(d\) fixed Boolean features
+\(\phi_1,\ldots,\phi_d\) on an object space \(X\). The hypothesis class consists
+of the distinct functions
+\[
+ \C=\left\{h_S:S\subseteq[d]\right\},\qquad
+ h_S(x)=\bigvee_{i\in S}\phi_i(x).
+\]
+The empty disjunction is \(0\). Repeated representations of the same Boolean
+function are counted only once; thus \(|\C|\le 2^d\). Ordinary monotone
+disjunctions have \(d=n\), with \(\phi_i(x)=x_i\).
+Allowing negated literals is handled in Section~\ref{sec:literals}.
+
+Let \(D\) be any distribution on \(X\times X\). There is a fixed
+\(h^*=h_{S^*}\in\C\) such that
+\[
+ \Prb_{(x_1,x_2)\sim D}\bigl[h^*(x_1)=h^*(x_2)\bigr]=1.
+\]
+A labelled pair has the common label \(y=h^*(x_1)=h^*(x_2)\).
+All sampled pairs are independent draws from \(D\); the coordinates
+inside a pair can be arbitrarily dependent and can have different marginals.
+
+Define the incompatibility probability and a prediction error by
+\begin{align}
+ q_D(h)&=\Prb_D[h(x_1)\ne h(x_2)],\\
+ e_D(h)&=\Prb_D[h(x_1)\ne h^*(x_1)
+                 \ \text{or}\ h(x_2)\ne h^*(x_2)].
+\end{align}
+The second quantity is stronger than error on the first view, which is the
+prediction convention in \cite{bb07}. Either first-view or second-view error
+is at most \(e_D(h)\). For \(0<\tau<1\), set
+\[
+ \C_D(\tau)=\{h\in\C:q_D(h)\le\tau\},\qquad K=|\C_D(\tau)|.
+\]
+This is \(\C_{D,\chi}(\tau)\) for the compatibility in the question.
+Since \(h^*\) is perfectly compatible, \(1\le K\le 2^d\).
+
+\begin{theorem}[Fixed sample sizes]\label{thm:main}
+Let \(0<\varepsilon,\tau<1\) and \(0<\delta\le1/2\).
+Draw \(u\) unlabelled pairs and an independent set of \(m\) labelled pairs, where
+\begin{equation}\label{eq:sizes}
+ u\ \ge\ \frac{d\ln2+\ln(2/\delta)}{\tau},
+ \qquad
+ m\ \ge\ \frac{\ln K+\ln(2/\delta)}{\varepsilon}.
+\end{equation}
+The exclusion-closure algorithm below returns a disjunction \(\widehat h\)
+satisfying, with probability at least \(1-\delta\),
+\[
+ e_D(\widehat h)\le\varepsilon,\qquad q_D(\widehat h)\le\tau.
+\]
+It runs in time polynomial in \(d,u,m\).
+For \(d\ge1\), with dense Boolean input, a queue implementation takes \(O(d(u+m)+d)\)
+elementary operations after the features have been evaluated.
+
+The algorithm itself takes the samples as input and does not use \(K\).
+Section~\ref{sec:adaptive} gives a complete rule for acquiring and stopping
+the labelled sample without knowing \(K\).
+\end{theorem}
+
+\section{An exact consistency solver}
+
+Write \(A(x)=\{i:\phi_i(x)=1\}\). For an unlabelled pair, write
+\(A=A(x_1)\), \(B=A(x_2)\). If \(E=[d]\setminus S\) denotes excluded
+features, then
+\begin{equation}\label{eq:closed}
+ h_S(x_1)=h_S(x_2)
+ \quad\Longleftrightarrow\quad
+ (A\subseteq E\ \Longleftrightarrow\ B\subseteq E).
+\end{equation}
+Thus each pair gives two implications between sets:
+\begin{equation}\label{eq:rules}
+ A\subseteq E\ \Longrightarrow\ B\subseteq E,
+ \qquad
+ B\subseteq E\ \Longrightarrow\ A\subseteq E.
+\end{equation}
+An implication fires only when \emph{every} feature in its premise has
+already been excluded. An overlap with the excluded set does not suffice.
+
+\medskip
+\textbf{Algorithm \(\CONS(U,L)\).}
+\begin{enumerate}
+\item Let \(E\) initially contain every feature active in either coordinate
+of any negatively labelled pair in \(L\).
+\item Apply all rules \eqref{eq:rules} from \(U\), adding their conclusions
+to \(E\), until no further feature can be added.
+\item Set \(\widehat S=[d]\setminus E\) and return \(h_{\widehat S}\).
+For a general consistency-decision interface, check all positive labelled
+pairs and report inconsistency if one is not satisfied.
+Under the realizability promise this check always succeeds.
+\end{enumerate}
+
+\begin{lemma}[Safety of exclusion]\label{lem:safety}
+Throughout the algorithm, \(E\cap S^*=\varnothing\).
+Consequently \(S^*\subseteq\widehat S\), and the returned disjunction has
+no false negatives anywhere on \(X\).
+\end{lemma}
+
+\begin{proof}
+If a pair has label \(0\), neither of its coordinates can contain an active
+feature from \(S^*\). Initialization therefore excludes no target feature.
+
+Suppose the invariant holds before a rule fires, and suppose \(A\subseteq E\).
+Then \(A\cap S^*=\varnothing\), so \(h^*(x_1)=0\). Compatibility of the
+target on this sampled pair implies \(h^*(x_2)=0\), hence
+\(B\cap S^*=\varnothing\). Adding \(B\) to \(E\) preserves the invariant.
+The argument for the other direction is identical.
+
+All sampled pairs satisfy the target promise almost surely, including in the
+finite capped procedure used later. Finally \(S^*\subseteq\widehat S\)
+implies \(h^*(x)\le h_{\widehat S}(x)\) for every \(x\in X\).
+\end{proof}
+
+\begin{lemma}[Consistency and maximality]\label{lem:cons}
+The algorithm terminates, agrees on every pair in \(U\), and satisfies every
+labelled pair in \(L\). Its support is the greatest feasible support, not just
+a maximal one. On arbitrary labelled input, failure of its positive-label
+check proves that no feasible disjunction exists.
+\end{lemma}
+
+\begin{proof}
+Each nontrivial update adds at least one feature to \(E\), so at most \(d\)
+such updates occur. At termination both implications in \eqref{eq:rules}
+hold for every pair, proving empirical agreement.
+
+Every feature in a negatively labelled pair was excluded initially, so both
+coordinates receive label \(0\). If a pair has label \(1\), each coordinate
+has an active target feature. By Lemma~\ref{lem:safety} these features are
+retained, so both coordinates receive label \(1\).
+
+For maximality, replace \(S^*\) in the safety proof by any support \(T\)
+that agrees on \(U\) and avoids every negative labelled example.
+The same induction shows \(T\subseteq\widehat S\).
+The returned support itself has those properties. It is therefore their
+greatest feasible support. Positive constraints are monotone in the support:
+if any feasible support satisfies a positive example, so does
+\(\widehat S\). If \(\widehat S\) fails a positive constraint, every smaller
+feasible support fails it as well.
+\end{proof}
+
+\subsection{Why the computation is efficient}
+
+A simple implementation scans all pairs after each change and already
+takes polynomial time, at most \(O(d^2u+dm+d)\) on dense input.
+A queue implementation is linear in the total input incidence size:
+\begin{enumerate}
+\item For each of the \(2u\) pair sides, store the number of its features not
+yet excluded.
+\item For each feature, store the pair sides in which it occurs.
+\item When a feature is excluded for the first time, decrement all its
+incidence counters. Enqueue a side when its counter reaches zero.
+\item On removing a zero-count side from the queue, exclude all features
+on the opposite side of that pair.
+\end{enumerate}
+Each feature is excluded at most once; each side reaches zero at most once;
+and each occurrence is used in at most one decrement and one opposite-side
+scan. All sides whose counters are initially zero, including empty sides,
+are enqueued. Preprocessing and checking
+labelled input are also linear in its incidence size.
+
+Equivalently, putting \(z_i=1\) when feature \(i\) is excluded, a pair
+contributes Horn implications
+\[
+ \bigwedge_{i\in A}z_i\ \Longrightarrow\ z_j \quad(j\in B),
+ \qquad
+ \bigwedge_{j\in B}z_j\ \Longrightarrow\ z_i \quad(i\in A).
+\]
+The queue groups the common premises, avoiding an unnecessary expansion
+into \(|A||B|\) repeated literal occurrences. No satisfiability or counting
+oracle is required.
+
+\section{Proof of the labelled-sample guarantee}
+
+For the unlabelled sample \(U\), define the empirical compatible class
+\[
+ \HU=\{h\in\C:h(x_1)=h(x_2)\text{ for every }(x_1,x_2)\in U\}.
+\]
+This class is only used in the proof; the learner never enumerates it.
+
+\begin{lemma}[Unlabelled reduction]\label{lem:reduction}
+For every \(u\ge0\),
+\[
+ \Prb[\HU\not\subseteq\C_D(\tau)]\le|\C|e^{-\tau u}.
+\]
+\end{lemma}
+\begin{proof}
+For a fixed \(h\) with \(q_D(h)>\tau\), the probability of agreeing on all
+\(u\) independent pairs is
+\[
+ (1-q_D(h))^u\le e^{-q_D(h)u}\le e^{-\tau u}.
+\]
+Sum this bound over the at most \(|\C|\) hypotheses outside \(\C_D(\tau)\).
+\end{proof}
+
+\begin{lemma}[Conditional labelled bound]\label{lem:label}
+For a fixed \(U\), if \(L\) consists of \(m\) independent labelled pairs
+drawn independently of \(U\), then
+\[
+ \Prb[\exists h\in\HU:e_D(h)>\varepsilon
+            \text{ and }h\text{ satisfies }L\mid U]
+ \le|\HU|e^{-\varepsilon m}.
+\]
+\end{lemma}
+\begin{proof}
+The class \(\HU\) is fixed after conditioning on \(U\).
+A fixed hypothesis of pair prediction error \(p\) satisfies an independent
+labelled pair on both coordinates with probability \(1-p\).
+Its probability of satisfying all \(m\) pairs is \((1-p)^m\le e^{-pm}\).
+Sum over \(\HU\). No independence of the two coordinates is used.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By the first inequality in \eqref{eq:sizes} and Lemma~\ref{lem:reduction},
+with probability at least \(1-\delta/2\) the event
+\[
+ \mathcal E_U=\{\HU\subseteq\C_D(\tau)\}
+\]
+holds. On that event \(|\HU|\le K\), and every possible algorithmic output
+has incompatibility at most \(\tau\).
+
+The solver returns a member of \(\HU\) satisfying all labels, by
+Lemma~\ref{lem:cons}. Conditional on any such \(U\),
+Lemma~\ref{lem:label} and the second inequality in \eqref{eq:sizes} give
+\[
+ \Prb[e_D(\widehat h)>\varepsilon\mid U]
+ \le K e^{-\varepsilon m}\le\delta/2.
+\]
+Combining the two failure probabilities proves both asserted error bounds.
+The algorithmic analysis proves the running-time claim.
+\end{proof}
+
+In particular, for \(\tau=\varepsilon\) and \(d=n\) or \(2n\),
+\[
+ \boxed{\quad
+ u=O\!\left(\frac{n+\ln(1/\delta)}{\varepsilon}\right),\qquad
+ m=O\!\left(\frac{\ln|\C_{D,\chi}(\varepsilon)|
+                         +\ln(1/\delta)}{\varepsilon}\right).
+ \quad}
+\]
+The use of unlabelled data is substantive: the logarithm in the labelled
+bound is that of the nearly compatible class, not the full \(2^d\) class.
+
+\section{Stopping without knowing the compatible class}\label{sec:adaptive}
+
+The fixed-sample theorem does not require counting \(K\) to run the solver.
+To remove even the need to choose a label budget using an unknown \(K\),
+the following fully specified wrapper uses fresh random labels and
+independent validation. It does not make active label queries or select
+examples for labelling.
+
+Let
+\begin{equation}\label{eq:adaptive}
+ N=\left\lceil\frac{d\ln2+\ln(4/\delta)}{\tau}\right\rceil,\quad
+ b=\ln(16/\delta),\quad
+ m_j=\left\lceil\frac{64\,2^j b}{\varepsilon}\right\rceil\quad(j\ge0).
+\end{equation}
+Draw \(N\) unlabelled pairs once. The computable final phase is
+\[
+ J=\min\left\{j\ge0:
+             m_j\ge\frac4\varepsilon(d\ln2+b)\right\}.
+\]
+The constant \(64\) is deliberately conservative; \(J\) is allowed to be \(0\).
+
+For \(j=0,\ldots,J\):
+\begin{enumerate}
+\item Draw \(m_j\) fresh labelled training pairs and compute \(h_j=\CONS(U,L_j)\).
+\item If \(j=J\), return \(h_j\).
+\item Otherwise draw \(m_j\) fresh labelled validation pairs.
+Return \(h_j\) if the fraction on which at least one view is misclassified
+is at most \(\varepsilon/2\). If not, continue.
+\end{enumerate}
+
+\begin{theorem}[Automatic label budget]\label{thm:adaptive}
+The wrapper always terminates in polynomial time. With probability at
+least \(1-\delta\), it simultaneously returns a hypothesis with
+\[
+ e_D(\widehat h)\le\varepsilon,\qquad q_D(\widehat h)\le\tau
+\]
+and uses at most
+\begin{equation}\label{eq:400}
+ Q\le400\,\frac{\ln K+\ln(16/\delta)}{\varepsilon}
+\end{equation}
+labelled pairs, counting both training and validation.
+Moreover,
+\[
+ \E Q=O\!\left(\frac{\ln K+\ln(1/\delta)}{\varepsilon}\right).
+\]
+A deterministic worst-case bound uses \(d\ln2\) instead of \(\ln K\).
+The bound through \(K\) is a high-probability and an expectation guarantee.
+\end{theorem}
+
+\subsection{Accuracy and high-probability label count}
+
+The event \(\mathcal E_U\) now fails with probability at most \(\delta/4\).
+Conditional on a current hypothesis and all prior information, its
+validation block remains independent. Standard binomial bounds give:
+\[
+ \begin{array}{ll}
+ e_D(h_j)>\varepsilon
+ &\Longrightarrow\
+ \Prb[\text{validation accepts}]\le e^{-\varepsilon m_j/8},\\[3pt]
+ e_D(h_j)\le\varepsilon/4
+ &\Longrightarrow\
+ \Prb[\text{validation rejects}]\le e^{-\varepsilon m_j/12}.
+ \end{array}
+\]
+The first is the lower-tail bound at half the mean. For the second,
+binomial stochastic domination reduces to mean \(\varepsilon/4\), and
+the upper-tail bound is applied at twice that mean.
+
+The probability of ever accepting an error greater than \(\varepsilon\)
+before the final phase is at most
+\[
+ \sum_{j\ge0}e^{-\varepsilon m_j/8}
+ \le\sum_{j\ge0}e^{-8\,2^j b}
+ \le2e^{-8b}\le\delta/16.
+\]
+At phase \(J\), Lemma~\ref{lem:label} over the entire class gives
+\[
+ \Prb[e_D(h_J)>\varepsilon/4\mid U,\text{past}]
+ \le 2^d e^{-\varepsilon m_J/4}
+ \le e^{-b}=\delta/16.
+\]
+These bounds do not require \(\mathcal E_U\).
+
+For analysis only, define the unknown phase
+\[
+ j^*=\min\left\{j\ge0:
+       m_j\ge\frac4\varepsilon(\ln K+b)\right\}.
+\]
+Since \(K\le2^d\), \(j^*\le J\).
+Conditional on \(\mathcal E_U\), if phase \(j^*\) is reached, its fresh
+training sample yields \(e_D(h_{j^*})\le\varepsilon/4\) except with
+probability \(e^{-b}=\delta/16\). If \(j^*<J\), rejection of such a
+hypothesis has probability at most \(e^{-\varepsilon m_{j^*}/12}\le
+e^{-b}=\delta/16\). If \(j^*=J\), it stops regardless.
+
+Therefore the probability, on \(\mathcal E_U\), of continuing beyond
+\(j^*\) is at most \(\delta/8\). Conditioning on histories is legitimate
+because each training and validation block is fresh; alternatively,
+all independent blocks can be generated in advance.
+
+On stopping by \(j^*\), the number of labels obeys
+\[
+ Q\le2\sum_{j=0}^{j^*}m_j\le6m_{j^*}
+ \le384\,\frac{\ln K+b}{\varepsilon}+6
+ \le400\,\frac{\ln K+b}{\varepsilon}.
+\]
+For the middle inequalities, use \(\lceil c2^j\rceil\le c2^j+1\),
+\(j^*+1\le2^{j^*}\), and minimality of \(j^*\).
+If \(j^*=0\), \(m_0\le64b/\varepsilon+1\);
+otherwise \(m_{j^*}<8(\ln K+b)/\varepsilon+1\).
+
+The total failure probability for the two errors and the label bound is
+at most
+\[
+ \delta/4+\delta/16+\delta/16+\delta/8=\delta/2\le\delta.
+\]
+Replacing \(K\) by \(2^d\) in the same size calculation bounds the
+deterministic cap. In particular,
+\(J=O(\log(1+d/\ln(1/\delta)))\), and all time and sample bounds are
+polynomial in the ordinary learning parameters.
+
+\subsection{Expected label count}
+
+For a fixed \(U\), put \(k_U=|\HU|\ge1\) and define \(j_U\) by replacing
+\(K\) with \(k_U\) in the definition of \(j^*\). At every reached phase
+\(j\ge j_U\), the conditional probability of continuing is at most
+\[
+ r=2e^{-b}=\delta/8\le1/8.
+\]
+This follows from the same training and validation bounds; at the final
+phase continuation probability is zero. Also \(m_{j+1}\le2m_j\).
+Consequently the expected cost after phase \(j_U\) is at most
+\[
+ \sum_{s\ge1}2^{s+1}m_{j_U}r^s
+ =2m_{j_U}\frac{2r}{1-2r}\le\frac23m_{j_U}.
+\]
+Together with the cost of earlier phases,
+\[
+ \E[Q\mid U]\le7m_{j_U}
+ \le448\,\frac{\ln k_U+b}{\varepsilon}+7.
+\]
+
+It remains to control rare, unhelpful unlabelled samples without paying
+an extra term proportional to \(\delta d\).
+Every \(h\notin\C_D(\tau)\) belongs to \(\HU\) with probability at most
+\(e^{-\tau N}\). Hence
+\[
+ \E k_U\le K+|\C|e^{-\tau N}\le K+\delta/4.
+\]
+Jensen's inequality gives
+\[
+ \E\ln k_U\le\ln(K+\delta/4)\le\ln K+\delta/4.
+\]
+Substitution proves the stated expectation bound. This also shows why no
+class-counting procedure is hidden inside the stopping rule.
+
+\section{Literal conventions and extensions}\label{sec:literals}
+
+\subsection{Negated literals}
+
+For ordinary Boolean disjunctions with negations, use the feature map
+\[
+ \phi(x)=(x_1,\ldots,x_n,1-x_1,\ldots,1-x_n),
+ \qquad d=2n.
+\]
+The consistency proof applies to this restricted set of feature vectors
+without change. It never assumes that all \(2^{2n}\) feature vectors can
+occur.
+
+The counting in \(K\) is over distinct Boolean functions. In particular,
+every literal subset containing both \(x_i\) and \(\neg x_i\) represents
+the same constant-one function. One can canonicalize all such outputs to
+\(1\). The full signed disjunction class, including the empty disjunction,
+has at most \(3^n+1\) distinct functions; the looser bound \(2^{2n}\) is
+sufficient for the unlabelled sample.
+
+If a convention excludes constant functions, adjoining them changes
+\(K\) by at most two, so the order of the labelled bound is unchanged.
+In that optional convention the output may be outside the restricted
+class. The principal theorem uses the class of all disjunctions generated
+by the stated literals, including the empty disjunction and tautologies
+when representable.
+
+\subsection{Different disjunctions in two views}
+
+The same argument also covers targets \(h_1^*,h_2^*\) on two different
+feature sets, promised to agree on the pair distribution.
+Use disjoint feature indices for the two views, take the two active sets
+in that common index universe, and apply the same two implications.
+The compatible-class count then refers to distinct hypothesis pairs.
+No conditional-independence assumption is needed for this extension.
+
+\section{Small example and verification}
+
+Consider five features and the unlabelled pairs
+\[
+ (\{2\},\{3,4\}),\qquad
+ (\{4\},\{5\}),\qquad
+ (\{1,3\},\{1,5\}).
+\]
+Suppose a labelled negative pair is \((\{2\},\{2\})\).
+Initially \(E=\{2\}\).
+The first agreement pair forces \(3,4\) into \(E\);
+the second forces \(5\) into \(E\).
+The third pair imposes no further exclusion. The output is
+\(\widehat h(x)=x_1\). A positive labelled pair
+\((\{1,3\},\{1,5\})\) is satisfied automatically.
+
+The accompanying code implements the queue solver, signed feature lifting,
+and the fully specified wrapper. An independently written finite enumerator
+checked the underlying closure property on 19,560 systems:
+5,560 exhaustive two-pair systems with all exclusion masks for \(d\le3\);
+10,000 random systems for \(4\le d\le8\); and 4,000 target-generated
+labelled systems. It checked 48,000 labelled pairs in the last group.
+No counterexample was found.
+
+A separate verifier compared the actual queue implementation against
+complete enumeration on 22,560 systems, including 2,000 signed-literal
+systems and 1,000 arbitrary, potentially inconsistent systems.
+All 160,627 feasible-support witnesses and all 71,335 deletion-certificate
+steps passed. It correctly rejected 746 inconsistent systems.
+Exact results are in \texttt{solver\_verification\_results.json}.
+
+These are finite consistency checks, not a machine-checked formalization
+of the probabilistic theorems. The mathematical proofs above establish
+the all-dimensions guarantee.
+
+\section{Bibliographic and reward status}
+
+The 2013 paper \cite{bbel13} studies two-sided disjunctions, where two
+OR functions give complementary labels to a \emph{single} object, with
+additional distributional conditions in its passive results.
+The 2024 paper \cite{dmrt24} studies co-training under a weak-dependence
+condition using active learning. Neither set of hypotheses and resource
+bounds directly supplies the arbitrary-distribution, passive guarantee
+proved here.
+
+The later author version of the framework paper \cite{bb10}, Section 6.2,
+does not repeat the particular co-training-disjunction item, though it
+does list other related questions. This omission does not establish
+that the item had been solved, but it prevents treating the old list alone
+as proof of continuing openness.
+
+The present search did not establish a previous publication of the
+specific exclusion-closure argument, a payment of this particular reward,
+or a current renewal of the reward. Establishing priority and applying
+the 2007 monetary promise require review by the problem's authors.
+The mathematical theorem here and those administrative questions should
+be evaluated separately.
+
+\medskip
+\textbf{Preparation and reproducibility.}
+This note was prepared with GPT-6 Astra assistance for Grisha Pochuev.
+Independent reasoning passes checked the finite solver and the adaptive
+sample argument. The supplied Python code requires only the standard
+library. Run \texttt{python cotrain\_disjunctions.py --demo} for the example
+and \texttt{python verify\_solver.py} for the implementation checks.
+The source \LaTeX{} and exact verification results accompany the PDF.
+
+\begin{thebibliography}{9}\small
+\bibitem{bb07}
+A. Blum and M.-F. Balcan.
+\emph{Open Problems in Efficient Semi-Supervised PAC Learning}.
+COLT 2007, pp.\ 622--624, especially Sections 3 and 3.2.
+\url{https://home.ttic.edu/~avrim/Papers/openproblems.pdf}
+
+\bibitem{bb10}
+M.-F. Balcan and A. Blum.
+\emph{A Discriminative Model for Semi-Supervised Learning}.
+Journal of the ACM 57(3), 2010. Author version (2009).
+\url{https://home.ttic.edu/~avrim/Papers/labeled_unlabeled-2009.pdf}
+
+\bibitem{bbel13}
+M.-F. Balcan, C. Berlind, S. Ehrlich, and Y. Liang.
+\emph{Efficient Semi-supervised and Active Learning of Disjunctions}.
+ICML 2013, PMLR 28(1), pp.\ 633--641.
+\url{https://proceedings.mlr.press/v28/balcan13.html}
+
+\bibitem{dmrt24}
+I. Diakonikolas, M. Ma, L. Ren, and C. Tzamos.
+\emph{Fast Co-Training under Weak Dependence via Stream-Based Active Learning}.
+ICML 2024, PMLR 235, pp.\ 10841--10864.
+\url{https://proceedings.mlr.press/v235/diakonikolas24b.html}
+\end{thebibliography}
+\end{document}
+

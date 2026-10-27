@@ -1,0 +1,62 @@
+ПЕРВОИСТОЧНИКИ И СТАТУС ПРОВЕРКИ
+20 октября 2026 года
+
+1. Blum, Avrim; Balcan, Maria-Florina.
+   Open Problems in Efficient Semi-Supervised PAC Learning.
+   COLT 2007, pp. 622–624.
+   https://home.ttic.edu/~avrim/Papers/openproblems.pdf
+
+   Прочитаны все три страницы. В §3 дана оценка через логарифм числа
+   почти совместимых гипотез. В §3.2 указан пункт Co-training with
+   disjunctions и обещаны 300 долларов за положительное решение.
+   Историческое обещание подтверждено; действующая выплата не подтверждена.
+
+2. Публикационная страница Аврима Блума.
+   https://home.ttic.edu/~avrim/Papers/pubs.html
+
+   В разделе 2007 года сохранена ссылка на заметку с упоминанием
+   небольших денежных премий. Старое описание публикации не является
+   отдельным подтверждением открытости каждого пункта на 2026 год.
+
+3. Balcan, Maria-Florina; Blum, Avrim.
+   A Discriminative Model for Semi-Supervised Learning.
+   JACM 57(3), 2010.
+   Авторская версия:
+   https://home.ttic.edu/~avrim/Papers/labeled_unlabeled-2009.pdf
+   Более ранняя версия:
+   https://home.ttic.edu/~avrim/Papers/labeled_unlabeled-2008.pdf
+
+   Прочитаны алгоритмические разделы и обсуждение открытых задач.
+   В §6.2 конкретный пункт о дизъюнкциях на согласованных парах
+   не повторён. Не найдено объяснения этого отсутствия.
+   Отсутствие пункта не доказывает, что задача решена.
+
+4. Balcan, Maria-Florina; Berlind, Christopher; Ehrlich, Steven; Liang, Yingyu.
+   Efficient Semi-supervised and Active Learning of Disjunctions.
+   ICML 2013, PMLR 28(1):633–641.
+   https://proceedings.mlr.press/v28/balcan13.html
+   https://proceedings.mlr.press/v28/balcan13.pdf
+
+   Исследуются двусторонние дизъюнкции: h_+(x) = НЕ h_-(x).
+   Это другой пункт списка 2007 года. В пассивных алгоритмах остаются
+   ограничения на распределение. Работа не даёт автоматически теорему
+   для произвольного распределения пар из нашей постановки.
+
+5. Diakonikolas, Ilias; Ma, Mingchen; Ren, Lisheng; Tzamos, Christos.
+   Fast Co-Training under Weak Dependence via Stream-Based Active Learning.
+   ICML 2024, PMLR 235:10841–10864.
+   https://proceedings.mlr.press/v235/diakonikolas24b.html
+   https://mmingchen.github.io/pub/co_training_query_model.pdf
+
+   Рассматриваются слабая зависимость и активные запросы меток.
+   Эти предпосылки и оценка ресурсов отличаются от постановки 2007 года.
+
+ОГРАНИЧЕНИЯ БИБЛИОГРАФИЧЕСКОГО ВЫВОДА
+
+Не найдено опубликованного совпадающего решения или сообщения о выплате
+именно этой премии. Отрицательный результат поиска не устанавливает
+новизну и не исключает неопубликованного либо иначе названного решения.
+Содержание выступления Блума 2008 года о полуразмеченном обучении
+получить не удалось. Дополнительные смысловые запросы Exa не вернули
+источников из-за исчерпанной квоты. Внешняя переписка не велась.
+

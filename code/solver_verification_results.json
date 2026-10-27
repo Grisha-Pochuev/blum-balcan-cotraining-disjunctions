@@ -1,0 +1,87 @@
+{
+  "status": "passed",
+  "seed": 7251,
+  "checks": [
+    {
+      "kind": "exhaustive_two_pairs",
+      "dimension": 1,
+      "cases": 12
+    },
+    {
+      "kind": "exhaustive_two_pairs",
+      "dimension": 2,
+      "cases": 220
+    },
+    {
+      "kind": "exhaustive_two_pairs",
+      "dimension": 3,
+      "cases": 5328
+    },
+    {
+      "kind": "random_constraint_systems",
+      "dimension": 4,
+      "cases": 2000
+    },
+    {
+      "kind": "random_constraint_systems",
+      "dimension": 5,
+      "cases": 2000
+    },
+    {
+      "kind": "random_constraint_systems",
+      "dimension": 6,
+      "cases": 2000
+    },
+    {
+      "kind": "random_constraint_systems",
+      "dimension": 7,
+      "cases": 2000
+    },
+    {
+      "kind": "random_constraint_systems",
+      "dimension": 8,
+      "cases": 2000
+    },
+    {
+      "kind": "target_generated_labelled_samples",
+      "dimensions": [
+        1,
+        8
+      ],
+      "cases": 4000,
+      "labelled_pairs_checked": 48000
+    },
+    {
+      "kind": "signed_literal_samples",
+      "original_dimensions": [
+        1,
+        4
+      ],
+      "cases": 2000,
+      "lift_vectors_checked": 127,
+      "formula_truth_values_checked": 15000
+    },
+    {
+      "kind": "arbitrary_possibly_inconsistent_samples",
+      "dimensions": [
+        0,
+        6
+      ],
+      "cases": 1000,
+      "correctly_rejected": 746
+    }
+  ],
+  "total_constraint_systems_checked": 22560,
+  "feasible_support_witnesses_checked": 160627,
+  "certificate_deletions_replayed": 71335,
+  "scope": [
+    "greatest feasible support",
+    "positive and negative labels",
+    "agreement pairs",
+    "global target domination",
+    "literal lifting",
+    "signed formula truth tables",
+    "inconsistency detection",
+    "certificate replay"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "seed": 7251,
+  "checks": [
+    {
+      "kind": "exhaustive_two_pairs",
+      "dimension": 1,
+      "systems_with_forbidden_masks": 12,
+      "feasible_target_witnesses": 15
+    },
+    {
+      "kind": "exhaustive_two_pairs",
+      "dimension": 2,
+      "systems_with_forbidden_masks": 220,
+      "feasible_target_witnesses": 332
+    },
+    {
+      "kind": "exhaustive_two_pairs",
+      "dimension": 3,
+      "systems_with_forbidden_masks": 5328,
+      "feasible_target_witnesses": 10083
+    },
+    {
+      "kind": "random_systems",
+      "dimension": 4,
+      "systems_with_forbidden_masks": 2000,
+      "feasible_target_witnesses": 2461
+    },
+    {
+      "kind": "random_systems",
+      "dimension": 5,
+      "systems_with_forbidden_masks": 2000,
+      "feasible_target_witnesses": 3116
+    },
+    {
+      "kind": "random_systems",
+      "dimension": 6,
+      "systems_with_forbidden_masks": 2000,
+      "feasible_target_witnesses": 4015
+    },
+    {
+      "kind": "random_systems",
+      "dimension": 7,
+      "systems_with_forbidden_masks": 2000,
+      "feasible_target_witnesses": 5866
+    },
+    {
+      "kind": "random_systems",
+      "dimension": 8,
+      "systems_with_forbidden_masks": 2000,
+      "feasible_target_witnesses": 9904
+    },
+    {
+      "kind": "target_generated_labelled_samples",
+      "dimension_range": [
+        1,
+        8
+      ],
+      "systems": 4000,
+      "labelled_pairs_checked": 48000,
+      "checks": [
+        "greatest_feasible_support",
+        "target_retention",
+        "both_views_match_all_labels",
+        "global_no_false_negatives"
+      ]
+    }
+  ],
+  "status": "passed",
+  "unlabelled_constraint_systems_checked": 15560,
+  "feasible_target_witnesses_checked": 35792,
+  "labelled_constraint_systems_checked": 4000,
+  "total_constraint_systems_checked": 19560
+}

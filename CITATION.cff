@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Efficient learning from disjunction agreement pairs: an algorithm and proof for the formulation in Blum–Balcan (2007)"
+type: software
+authors:
+  - family-names: Pochuev
+    given-names: Grisha
+    email: n_854@mail.ru
+date-released: 2026-10-20
+version: "1.0"
+license:
+  - CC-BY-4.0
+  - MIT
+repository-code: "https://github.com/Grisha-Pochuev/blum-balcan-cotraining-disjunctions"
+keywords:
+  - semi-supervised learning
+  - co-training
+  - disjunctions
+  - PAC learning
+  - Horn satisfiability
+  - open problem
+references:
+  - type: conference-paper
+    title: "Open Problems in Efficient Semi-Supervised PAC Learning"
+    authors:
+      - family-names: Blum
+        given-names: Avrim
+      - family-names: Balcan
+        given-names: Maria-Florina
+    year: 2007
+    collection-title: "Learning Theory (COLT 2007), LNCS 4539"
+    start: 622
+    end: 624
+    doi: 10.1007/978-3-540-72927-3_45
