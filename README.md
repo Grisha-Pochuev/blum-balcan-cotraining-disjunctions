@@ -1,5 +1,7 @@
 # Co-training with disjunctions: an efficient semi-supervised learner
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23716388.svg)](https://doi.org/10.5281/zenodo.23716388)
+
 **Efficient learning from disjunction agreement pairs — an algorithm and proof for the formulation in Blum–Balcan (2007)**
 
 Grisha Pochuev · ORCID [0009-0005-0078-0857](https://orcid.org/0009-0005-0078-0857) · <n_854@mail.ru> · research note dated 20 October 2026
@@ -96,7 +98,15 @@ This note supplies a self-contained mathematical argument for the stated learnin
 
 ## Citation
 
-See [`CITATION.cff`](CITATION.cff). A Zenodo DOI will be added here once the record is published.
+Published on Zenodo: [10.5281/zenodo.23716388](https://doi.org/10.5281/zenodo.23716388) (version 1.0, 28 October 2026).
+
+```
+Grisha Pochuev. Efficient learning from disjunction agreement pairs: an algorithm
+and proof for the formulation in Blum–Balcan (2007). Zenodo, 2026.
+https://doi.org/10.5281/zenodo.23716388
+```
+
+See also [`CITATION.cff`](CITATION.cff).
 
 ## Licence
 

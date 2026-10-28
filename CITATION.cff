@@ -7,8 +7,13 @@ authors:
     given-names: Grisha
     email: n_854@mail.ru
     orcid: "https://orcid.org/0009-0005-0078-0857"
-date-released: 2026-10-20
+date-released: 2026-10-28
 version: "1.0"
+doi: 10.5281/zenodo.23716388
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23716388
+    description: "Zenodo record of version 1.0"
 license:
   - CC-BY-4.0
   - MIT
