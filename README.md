@@ -113,3 +113,5 @@ See also [`CITATION.cff`](CITATION.cff).
 Paper (`paper/`, `docs/`): [CC BY 4.0](paper/LICENSE-CC-BY-4.0.txt). Code (`code/`): [MIT](LICENSE).
 
 Contact: Grisha Pochuev, <n_854@mail.ru>
+
+Subscribe to my Telegram blog, where I write about psychology and much more: https://t.me/let_people_dance
